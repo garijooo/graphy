@@ -2,7 +2,7 @@ package kz.garijooo.graphy
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import kz.garijooo.graphy.views.MainFragment
+import kz.garijooo.graphy.controllers.MainFragment
 
 class MainActivity : AppCompatActivity() {
 
