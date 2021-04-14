@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.observe
@@ -34,7 +35,8 @@ class MainFragment : Fragment() {
     // limitations
     private var startOX: Float? = null
     private var endOX: Float? = null
-
+    // sub components
+    private var errorTextView: TextView? = null
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -75,7 +77,9 @@ class MainFragment : Fragment() {
             })
         }
 
-
+        errorTextView = activity?.findViewById<TextView>(R.id.error_textView)?.apply {
+            this.visibility = View.INVISIBLE
+        }
         visibilityBtn = activity?.findViewById<Button>(R.id.visibilityBtn)?.apply {
         }
         visibilityBtn?.setOnClickListener {
@@ -88,7 +92,7 @@ class MainFragment : Fragment() {
 
             if(this.startOX != null && this.endOX != null){
                 if(this.startOX!! < this.endOX!!) {
-                    Log.d("555","Correct")
+                    errorTextView?.visibility = View.INVISIBLE
                     if(visibilityBtn?.text.toString() == getString(R.string.btn_hide)) {
                         visibilityBtn?.text = getString(R.string.btn_show)
                         cartesianSystem?.visibility = View.INVISIBLE
@@ -100,7 +104,7 @@ class MainFragment : Fragment() {
                     }
                 }
                 else {
-                    Log.d("556","Fail!!!")
+                    errorTextView?.visibility = View.VISIBLE
                 }
             }
 

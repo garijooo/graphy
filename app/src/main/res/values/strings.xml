@@ -2,7 +2,8 @@
     <string name="app_name">Graphy</string>
     <string name="btn_show">Show</string>
     <string name="btn_hide">Hide</string>
-    <string name="limitations_text">Please enter limitations for</string>
+    <string name="limitations_text">Enter limitations for</string>
     <string name="ox_axis_text">OX Axis</string>
     <string name="oy_axis_text">OY Axis</string>
+    <string name="error_text">Please, enter valid limitations!</string>
 </resources>
