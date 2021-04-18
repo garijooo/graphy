@@ -16,6 +16,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.observe
 import kz.garijooo.graphy.R
+import kz.garijooo.graphy.models.ConverterModel
 import kz.garijooo.graphy.models.MainViewModel
 import kz.garijooo.graphy.views.CartesianView
 
@@ -37,7 +38,8 @@ class MainFragment : Fragment() {
     private var endOX: Float? = null
     // sub components
     private var errorTextView: TextView? = null
-
+    // model objects
+    private var converter: ConverterModel = ConverterModel(0F, 0F, 0F)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
@@ -47,8 +49,14 @@ class MainFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+
         cartesianSystem = activity?.findViewById<CartesianView>(R.id.cartesian)?.apply {
+
         }
+//        converter = ConverterModel(this.startOX!!, this.endOX!!, cartesianSystem!!.width.toFloat())
+
+
+
 
         editTextStartOX = activity?.findViewById<EditText>(R.id.ox_start)?.apply {
             this.addTextChangedListener(object: TextWatcher {
@@ -83,6 +91,8 @@ class MainFragment : Fragment() {
         visibilityBtn = activity?.findViewById<Button>(R.id.visibilityBtn)?.apply {
         }
         visibilityBtn?.setOnClickListener {
+            Log.d("WIDTH", cartesianSystem?.width.toString())
+
             viewModel.startOX?.observe(this@MainFragment, Observer {
                 this.startOX = it
             })
@@ -101,6 +111,31 @@ class MainFragment : Fragment() {
                     else {
                         visibilityBtn?.text = getString(R.string.btn_hide)
                         cartesianSystem?.visibility = View.VISIBLE
+
+                        converter.oxStart = this.startOX!!
+                        converter.oxEnd = this.endOX!!
+                        converter.width = cartesianSystem!!.width.toFloat()
+
+                        cartesianSystem?.startOX = this.startOX!!
+                        cartesianSystem?.endOX = this.endOX!!
+
+                        var axisOX: MutableList<Float> = mutableListOf<Float>()
+                        var diff: Int = this.endOX!!.toInt() - this.startOX!!.toInt()
+                        Log.d("123", diff.toString())
+                        for(i in 0..diff) {
+                            var value: Float = i.toFloat()
+                            Log.d("333", value.toString())
+                            if(converter?.toDpOX(value) != null) {
+                                Log.d("999", converter!!.toDpOX(value).toString())
+                                axisOX.add(converter!!.toDpOX(value))
+                            }
+
+                        }
+
+                        Log.d("456", axisOX.toString())
+
+
+//                        cartesianSystem?.axisOX =
                     }
                 }
                 else {
