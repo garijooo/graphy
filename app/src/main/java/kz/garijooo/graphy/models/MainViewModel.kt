@@ -15,5 +15,7 @@ class MainViewModel : ViewModel() {
 //        }
     var startOX: MutableLiveData<Float>? = MutableLiveData<Float>()
     var endOX: MutableLiveData<Float>? = MutableLiveData<Float>()
+    var startOY: MutableLiveData<Float>? = MutableLiveData<Float>()
+    var endOY: MutableLiveData<Float>? = MutableLiveData<Float>()
 
 }

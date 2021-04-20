@@ -36,10 +36,12 @@ class MainFragment : Fragment() {
     // limitations
     private var startOX: Float? = null
     private var endOX: Float? = null
+    private var startOY: Float? = null
+    private var endOY: Float? = null
     // sub components
     private var errorTextView: TextView? = null
     // model objects
-    private var converter: ConverterModel = ConverterModel(0F, 0F, 0F)
+    private var converter: ConverterModel = ConverterModel(0F, 0F, 0F, 0F, 0F, 0F)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
@@ -74,8 +76,36 @@ class MainFragment : Fragment() {
         editTextEndOX = activity?.findViewById<EditText>(R.id.ox_end)?.apply {
             this.addTextChangedListener(object: TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
-                    if(editTextEndOX?.text.toString() == "" || editTextStartOX?.text.toString() == "-") viewModel.endOX?.postValue(0.0F)
+                    if(editTextEndOX?.text.toString() == "" || editTextEndOX?.text.toString() == "-") viewModel.endOX?.postValue(0.0F)
                     else viewModel.endOX?.postValue(editTextEndOX?.text.toString().toFloat())
+                }
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                }
+                override fun onTextChanged(s: CharSequence?, start: Int, count: Int, before: Int) {
+
+                }
+            })
+        }
+
+        editTextStartOY = activity?.findViewById<EditText>(R.id.oy_start)?.apply {
+            this.addTextChangedListener(object: TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    if(editTextStartOY?.text.toString() == "" || editTextStartOY?.text.toString() == "-") viewModel.startOY?.postValue(0.0F)
+                    else viewModel.startOY?.postValue(editTextStartOY?.text.toString().toFloat())
+                }
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                }
+                override fun onTextChanged(s: CharSequence?, start: Int, count: Int, before: Int) {
+
+                }
+            })
+        }
+
+        editTextEndOY = activity?.findViewById<EditText>(R.id.ox_end)?.apply {
+            this.addTextChangedListener(object: TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    if(editTextEndOY?.text.toString() == "" || editTextEndOY?.text.toString() == "-") viewModel.endOY?.postValue(0.0F)
+                    else viewModel.endOY?.postValue(editTextEndOY?.text.toString().toFloat())
                 }
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 }
@@ -91,13 +121,17 @@ class MainFragment : Fragment() {
         visibilityBtn = activity?.findViewById<Button>(R.id.visibilityBtn)?.apply {
         }
         visibilityBtn?.setOnClickListener {
-            Log.d("WIDTH", cartesianSystem?.width.toString())
-
             viewModel.startOX?.observe(this@MainFragment, Observer {
                 this.startOX = it
             })
             viewModel.endOX?.observe(this@MainFragment, Observer {
                 this.endOX = it
+            })
+            viewModel.startOY?.observe(this@MainFragment, Observer {
+                this.startOY = it
+            })
+            viewModel.endOY?.observe(this@MainFragment, Observer {
+                this.endOY = it
             })
 
             if(this.startOX != null && this.endOX != null){
@@ -114,28 +148,33 @@ class MainFragment : Fragment() {
 
                         converter.oxStart = this.startOX!!
                         converter.oxEnd = this.endOX!!
+                        converter.oyStart = this.startOY!!
+                        converter.oyEnd = this.endOY!!
                         converter.width = cartesianSystem!!.width.toFloat()
+                        converter.height = cartesianSystem!!.height.toFloat()
 
                         cartesianSystem?.startOX = this.startOX!!
                         cartesianSystem?.endOX = this.endOX!!
 
                         var axisOX: MutableList<Float> = mutableListOf<Float>()
                         var diff: Int = this.endOX!!.toInt() - this.startOX!!.toInt()
-                        Log.d("123", diff.toString())
                         for(i in 0..diff) {
                             var value: Float = i.toFloat()
-                            Log.d("333", value.toString())
                             if(converter?.toDpOX(value) != null) {
-                                Log.d("999", converter!!.toDpOX(value).toString())
                                 axisOX.add(converter!!.toDpOX(value))
                             }
 
                         }
 
-                        Log.d("456", axisOX.toString())
 
 
-//                        cartesianSystem?.axisOX =
+                        var points: MutableList<Float> = mutableListOf<Float>()
+                        var size: Int = cartesianSystem?.width ?: 1
+
+                        for(i in 0..(size - 1).toInt()){
+                            points.add(converter.toDpOY(this.func(converter.toCartesianOX(i.toFloat()))))
+                        }
+                        cartesianSystem?.updatePoints(points)
                     }
                 }
                 else {
@@ -146,4 +185,7 @@ class MainFragment : Fragment() {
         }
     }
 
+    fun func(x: Float): Float {
+        return x*x
+    }
 }
