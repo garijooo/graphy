@@ -186,6 +186,6 @@ class MainFragment : Fragment() {
     }
 
     fun func(x: Float): Float {
-        return x*x
+        return (x * x - 2)
     }
 }
