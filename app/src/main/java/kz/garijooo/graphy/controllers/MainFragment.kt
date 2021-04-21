@@ -52,6 +52,7 @@ class MainFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
+        /////////////////////
         cartesianSystem = activity?.findViewById<CartesianView>(R.id.cartesian)?.apply {
 
         }
@@ -153,8 +154,11 @@ class MainFragment : Fragment() {
                         converter.width = cartesianSystem!!.width.toFloat()
                         converter.height = cartesianSystem!!.height.toFloat()
 
+                        cartesianSystem?.converter = converter;
                         cartesianSystem?.startOX = this.startOX!!
                         cartesianSystem?.endOX = this.endOX!!
+                        cartesianSystem?.startOY = this.startOY!!
+                        cartesianSystem?.endOY = this.endOY!!
 
                         var axisOX: MutableList<Float> = mutableListOf<Float>()
                         var diff: Int = this.endOX!!.toInt() - this.startOX!!.toInt()

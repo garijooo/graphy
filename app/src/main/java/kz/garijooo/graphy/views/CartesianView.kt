@@ -6,13 +6,21 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
+import kz.garijooo.graphy.models.ConverterModel
 
 class CartesianView(context: Context, attrs: AttributeSet? = null): View(context, attrs) {
     constructor(context: Context) : this(context, null)
+    // painters
     val painterBG: Paint = Paint()
     val painterOX: Paint = Paint()
     val painterOXserifs: Paint = Paint()
     val painterGraph: Paint = Paint()
+
+    // converter object
+    private var _converter: ConverterModel? = null
+    var converter: ConverterModel?
+        get() = _converter
+        set(value) { this._converter = value }
 
     // points
     private var points: MutableList<Float> = mutableListOf<Float>()
@@ -67,12 +75,30 @@ class CartesianView(context: Context, attrs: AttributeSet? = null): View(context
 
     fun drawAxis(canvas: Canvas?) {
         canvas?.apply {
-            drawLine(100.0F, (this@CartesianView.height.toFloat() / 2), (this@CartesianView.width.toFloat()), (this@CartesianView.height.toFloat() / 2), painterOX )
+            //drawLine(100.0F, (this@CartesianView.height.toFloat() / 2), (this@CartesianView.width.toFloat()), (this@CartesianView.height.toFloat() / 2), painterOX )
             var start: Int = startOX!!.toInt()
             var end: Int = endOX!!.toInt()
             for(i in start..end) {
                 //drawLine(i.toFloat(), (this@CartesianView.height.toFloat() / 2 - 10F), i.toFloat(), (this@CartesianView.height.toFloat() / 2 + 10F), painterOXserifs)
 
+            }
+//            if(this@CartesianView.startOY!! < 0F && this@CartesianView.endOY!! > 0F) {
+//               // drawLine()
+////                this@CartesianView.converter.toDpOX()
+//            }
+            if(startOX != null) {
+                if(startOX!! < 0 && endOX!! > 0) {
+
+                    drawLine(converter?.toDpOX( -1 * startOX!!)!!, 0F, converter?.toDpOX( -1 * startOX!!)!!, this@CartesianView.height.toFloat(), painterOX)
+                }
+            }
+            if(startOY != null) {
+                if(startOY!! < 0 && endOY!! > 0) {
+
+                    var value = converter?.toDpOX( -1 * startOY!!)!! - this@CartesianView.height.toFloat()
+                    Log.d("VALUE oy", value.toString())
+                    drawLine(0F, value, this@CartesianView.width.toFloat(), value, painterOX)
+                }
             }
         }
     }
