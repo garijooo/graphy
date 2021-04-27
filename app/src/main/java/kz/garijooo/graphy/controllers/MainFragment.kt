@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.observe
@@ -28,6 +28,9 @@ class MainFragment : Fragment() {
     private lateinit var viewModel: MainViewModel
     private var visibilityBtn: Button? = null
     private var cartesianSystem: CartesianView? = null
+    // main layout
+    private var mainLayout: ConstraintLayout? = null
+
     // editTexts
     private var editTextStartOX: EditText? = null
     private var editTextEndOX: EditText? = null
@@ -154,6 +157,9 @@ class MainFragment : Fragment() {
                         converter.width = cartesianSystem!!.width.toFloat()
                         converter.height = cartesianSystem!!.height.toFloat()
 
+
+                        mainLayout = activity?.findViewById<ConstraintLayout>(R.id.main)
+
                         cartesianSystem?.converter = converter;
                         cartesianSystem?.startOX = this.startOX!!
                         cartesianSystem?.endOX = this.endOX!!
@@ -175,7 +181,7 @@ class MainFragment : Fragment() {
                         var points: MutableList<Float> = mutableListOf<Float>()
                         var size: Int = cartesianSystem?.width ?: 1
 
-                        for(i in 0..(size - 1).toInt()){
+                        for(i in 0 until size){
                             points.add(converter.toDpOY(this.func(converter.toCartesianOX(i.toFloat()))))
                         }
                         cartesianSystem?.updatePoints(points)

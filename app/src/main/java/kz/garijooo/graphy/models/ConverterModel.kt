@@ -2,6 +2,7 @@ package kz.garijooo.graphy.models
 
 import android.text.style.LineHeightSpan
 import android.util.Log
+import kotlin.math.abs
 
 class ConverterModel(oxStart: Float, oxEnd: Float, width: Float, oyStart: Float, oyEnd: Float, height: Float) {
     private var _oxStart: Float
@@ -49,10 +50,9 @@ class ConverterModel(oxStart: Float, oxEnd: Float, width: Float, oyStart: Float,
 
     }
     fun toDpOX(value: Float): Float{
-        var result: Float = (this._width / (this._oxEnd - this._oxStart)) * value
-        return result
+        return abs(((this.width / (this.oxEnd - this.oxStart)) * value))
     }
     fun toDpOY(value: Float): Float{
-        return (this.height / 2) - ((this.height / (this.oyEnd - this.oyStart)) * value)
+        return abs(this.height) - ((value - this.oyStart) * this.height / (this.oyEnd - this.oyStart))
     }
 }

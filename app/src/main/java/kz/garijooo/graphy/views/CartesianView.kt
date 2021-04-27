@@ -26,8 +26,6 @@ class CartesianView(context: Context, attrs: AttributeSet? = null): View(context
     private var points: MutableList<Float> = mutableListOf<Float>()
     fun updatePoints(points: MutableList<Float>) {
         this.points = points
-        Log.d("UPDATE POINTS", "updated")
-        Log.d("updated points", points.toString())
         invalidate()
     }
     // numeric fields
@@ -89,23 +87,28 @@ class CartesianView(context: Context, attrs: AttributeSet? = null): View(context
             if(startOX != null) {
                 if(startOX!! < 0 && endOX!! > 0) {
 
-                    drawLine(converter?.toDpOX( -1 * startOX!!)!!, 0F, converter?.toDpOX( -1 * startOX!!)!!, this@CartesianView.height.toFloat(), painterOX)
+                    drawLine(converter!!.toDpOX( 0F - startOX!!), 0F, converter!!.toDpOX(0F - startOX!!), this@CartesianView.height.toFloat(), painterOX)
                 }
             }
             if(startOY != null) {
                 if(startOY!! < 0 && endOY!! > 0) {
 
-                    var value = converter?.toDpOX( -1 * startOY!!)!! - this@CartesianView.height.toFloat()
+                   // var value = converter?.toDpOX( -1 * startOY!!)!! - this@CartesianView.height.toFloat()
+
+                    var value: Float? = converter?.toDpOY(0F);
                     Log.d("VALUE oy", value.toString())
-                    drawLine(0F, value, this@CartesianView.width.toFloat(), value, painterOX)
+                    drawLine(0F, value!!, this@CartesianView.width.toFloat(), value!!, painterOX)
                 }
             }
+
+
+
         }
     }
     fun drawGraph(canvas: Canvas?) {
         canvas?.apply {
             val size: Int = this@CartesianView.points.size
-            Log.d("points", this@CartesianView.points.toString())
+
             if(size != 0) {
                 for(i in 0..(size - 2)){
                     drawLine(i.toFloat(), this@CartesianView.points[i], (i+1).toFloat(), this@CartesianView.points[i+1], painterGraph)
@@ -121,7 +124,6 @@ class CartesianView(context: Context, attrs: AttributeSet? = null): View(context
             drawPaint(painterBG)
             drawAxis(this)
             drawGraph(this)
-            Log.d("ON DRAW", "has been drown")
         }
     }
 }
