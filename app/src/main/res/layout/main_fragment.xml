@@ -17,6 +17,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@id/visibilityBtn"
         android:visibility="invisible"
+
         />
     <Button
         android:id="@+id/visibilityBtn"

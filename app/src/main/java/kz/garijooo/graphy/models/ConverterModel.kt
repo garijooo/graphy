@@ -50,9 +50,9 @@ class ConverterModel(oxStart: Float, oxEnd: Float, width: Float, oyStart: Float,
 
     }
     fun toDpOX(value: Float): Float{
-        return abs(((this.width / (this.oxEnd - this.oxStart)) * value))
+        return (((this.width / (this.oxEnd - this.oxStart)) * value))
     }
     fun toDpOY(value: Float): Float{
-        return abs(this.height) - ((value - this.oyStart) * this.height / (this.oyEnd - this.oyStart))
+        return (((this.height) - ((value - this.oyStart) * this.height / (this.oyEnd - this.oyStart))))
     }
 }

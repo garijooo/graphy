@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -54,15 +55,7 @@ class MainFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-
-        /////////////////////
-        cartesianSystem = activity?.findViewById<CartesianView>(R.id.cartesian)?.apply {
-
-        }
-//        converter = ConverterModel(this.startOX!!, this.endOX!!, cartesianSystem!!.width.toFloat())
-
-
-
+        cartesianSystem = activity?.findViewById<CartesianView>(R.id.cartesian)
 
         editTextStartOX = activity?.findViewById<EditText>(R.id.ox_start)?.apply {
             this.addTextChangedListener(object: TextWatcher {
@@ -73,10 +66,10 @@ class MainFragment : Fragment() {
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 }
                 override fun onTextChanged(s: CharSequence?, start: Int, count: Int, before: Int) {
-
                 }
             })
         }
+
         editTextEndOX = activity?.findViewById<EditText>(R.id.ox_end)?.apply {
             this.addTextChangedListener(object: TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
@@ -86,7 +79,6 @@ class MainFragment : Fragment() {
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 }
                 override fun onTextChanged(s: CharSequence?, start: Int, count: Int, before: Int) {
-
                 }
             })
         }
@@ -100,12 +92,11 @@ class MainFragment : Fragment() {
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 }
                 override fun onTextChanged(s: CharSequence?, start: Int, count: Int, before: Int) {
-
                 }
             })
         }
 
-        editTextEndOY = activity?.findViewById<EditText>(R.id.ox_end)?.apply {
+        editTextEndOY = activity?.findViewById<EditText>(R.id.oy_end)?.apply {
             this.addTextChangedListener(object: TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
                     if(editTextEndOY?.text.toString() == "" || editTextEndOY?.text.toString() == "-") viewModel.endOY?.postValue(0.0F)
@@ -114,7 +105,6 @@ class MainFragment : Fragment() {
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 }
                 override fun onTextChanged(s: CharSequence?, start: Int, count: Int, before: Int) {
-
                 }
             })
         }
@@ -122,8 +112,9 @@ class MainFragment : Fragment() {
         errorTextView = activity?.findViewById<TextView>(R.id.error_textView)?.apply {
             this.visibility = View.INVISIBLE
         }
-        visibilityBtn = activity?.findViewById<Button>(R.id.visibilityBtn)?.apply {
-        }
+
+        visibilityBtn = activity?.findViewById<Button>(R.id.visibilityBtn)
+
         visibilityBtn?.setOnClickListener {
             viewModel.startOX?.observe(this@MainFragment, Observer {
                 this.startOX = it
@@ -157,24 +148,21 @@ class MainFragment : Fragment() {
                         converter.width = cartesianSystem!!.width.toFloat()
                         converter.height = cartesianSystem!!.height.toFloat()
 
-
-                        mainLayout = activity?.findViewById<ConstraintLayout>(R.id.main)
-
                         cartesianSystem?.converter = converter;
                         cartesianSystem?.startOX = this.startOX!!
                         cartesianSystem?.endOX = this.endOX!!
                         cartesianSystem?.startOY = this.startOY!!
                         cartesianSystem?.endOY = this.endOY!!
 
-                        var axisOX: MutableList<Float> = mutableListOf<Float>()
-                        var diff: Int = this.endOX!!.toInt() - this.startOX!!.toInt()
-                        for(i in 0..diff) {
-                            var value: Float = i.toFloat()
-                            if(converter?.toDpOX(value) != null) {
-                                axisOX.add(converter!!.toDpOX(value))
-                            }
-
-                        }
+//                        var axisOX: MutableList<Float> = mutableListOf<Float>()
+//                        var diff: Int = this.endOX!!.toInt() - this.startOX!!.toInt()
+//                        for(i in 0..diff) {
+//                            var value: Float = i.toFloat()
+//                            if(converter?.toDpOX(value) != null) {
+//                                axisOX.add(converter!!.toDpOX(value))
+//                            }
+//
+//                        }
 
 
 
@@ -196,6 +184,6 @@ class MainFragment : Fragment() {
     }
 
     fun func(x: Float): Float {
-        return (x * x - 2)
+        return (x * x)
     }
 }

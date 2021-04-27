@@ -85,13 +85,13 @@ class CartesianView(context: Context, attrs: AttributeSet? = null): View(context
 ////                this@CartesianView.converter.toDpOX()
 //            }
             if(startOX != null) {
-                if(startOX!! < 0 && endOX!! > 0) {
+                if(startOX!! <= 0 && endOX!! >= 0) {
 
                     drawLine(converter!!.toDpOX( 0F - startOX!!), 0F, converter!!.toDpOX(0F - startOX!!), this@CartesianView.height.toFloat(), painterOX)
                 }
             }
             if(startOY != null) {
-                if(startOY!! < 0 && endOY!! > 0) {
+                if(startOY!! <= 0 && endOY!! >= 0) {
 
                    // var value = converter?.toDpOX( -1 * startOY!!)!! - this@CartesianView.height.toFloat()
 
