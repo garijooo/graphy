@@ -57,6 +57,11 @@ class MainFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         cartesianSystem = activity?.findViewById<CartesianView>(R.id.cartesian)
 
+
+
+
+
+
         editTextStartOX = activity?.findViewById<EditText>(R.id.ox_start)?.apply {
             this.addTextChangedListener(object: TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
@@ -68,6 +73,10 @@ class MainFragment : Fragment() {
                 override fun onTextChanged(s: CharSequence?, start: Int, count: Int, before: Int) {
                 }
             })
+            if(viewModel.startOX != null) {
+                Log.d("check", viewModel.startOX!!.toString())
+//                this.setText(viewModel.startOX!!.toString())
+            }
         }
 
         editTextEndOX = activity?.findViewById<EditText>(R.id.ox_end)?.apply {
@@ -81,6 +90,7 @@ class MainFragment : Fragment() {
                 override fun onTextChanged(s: CharSequence?, start: Int, count: Int, before: Int) {
                 }
             })
+           // if(viewModel.endOX != null) this.setText(viewModel.endOX!!.toString())
         }
 
         editTextStartOY = activity?.findViewById<EditText>(R.id.oy_start)?.apply {
