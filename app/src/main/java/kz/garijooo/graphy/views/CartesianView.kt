@@ -65,6 +65,16 @@ class CartesianView(context: Context, attrs: AttributeSet? = null): View(context
         painterGraph.strokeWidth = 2F
         painterGraph.color = 0xff66ac4a.toInt()
     }
+    fun changeColor(color: String): Unit{
+        when(color) {
+            "green" -> painterGraph.color = 0xff66ac4a.toInt()
+            "red" -> painterGraph.color = 0xffb41320.toInt()
+            "blue" -> painterGraph.color = 0xff5f5fee.toInt()
+            "yellow" -> painterGraph.color = 0xffdff541.toInt()
+        }
+        invalidate()
+    }
+
 
     fun drawAxis(canvas: Canvas?) {
         canvas?.apply {

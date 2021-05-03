@@ -68,8 +68,7 @@ class MainFragment : Fragment() {
             this.adapter = adapter
             this.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                    //this@MainFragment.graphColor = parent.selectedItem.toString()
-                    Log.d("GET COLORS", parent.selectedItem.toString())
+                    cartesianSystem?.changeColor(parent.selectedItem.toString())
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>) {
