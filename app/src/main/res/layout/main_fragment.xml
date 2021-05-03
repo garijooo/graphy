@@ -108,6 +108,17 @@
         app:layout_constraintStart_toEndOf="@id/oy_start"
         app:layout_constraintEnd_toEndOf="parent"
         />
+    <EditText
+        android:id="@+id/stroke_width"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/oy_end"
+        android:ems="4"
+        android:inputType="number"
+
+        />
     <TextView
         android:id="@+id/error_textView"
         android:text="@string/error_text"
@@ -116,11 +127,19 @@
         android:textSize="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/oy_start"
+        app:layout_constraintTop_toBottomOf="@id/graph_color"
         android:layout_marginTop="20dp"
         android:textColor="@color/design_default_color_error"
-
         />
+    <Spinner
 
+        android:id="@+id/graph_color"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/stroke_width"
+        android:layout_marginTop="10dp"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

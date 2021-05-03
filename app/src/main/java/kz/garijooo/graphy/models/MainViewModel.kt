@@ -18,4 +18,7 @@ class MainViewModel : ViewModel() {
     var startOY: MutableLiveData<Float>? = MutableLiveData<Float>()
     var endOY: MutableLiveData<Float>? = MutableLiveData<Float>()
 
+    var strokeWidth: MutableLiveData<Float>? = MutableLiveData<Float>()
+
+    var graphColor: MutableLiveData<Int>? = MutableLiveData<Int>()
 }

@@ -9,10 +9,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
+import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.get
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.observe
@@ -37,15 +36,21 @@ class MainFragment : Fragment() {
     private var editTextEndOX: EditText? = null
     private var editTextStartOY: EditText? = null
     private var editTextEndOY: EditText? = null
+    // stroke width
+    private var strokeWidthEditText: EditText? = null
+    // graph color
+    private var graphColor: Spinner? = null
     // limitations
     private var startOX: Float? = null
     private var endOX: Float? = null
     private var startOY: Float? = null
     private var endOY: Float? = null
-    // sub components
+    // sub elements
     private var errorTextView: TextView? = null
     // model objects
     private var converter: ConverterModel = ConverterModel(0F, 0F, 0F, 0F, 0F, 0F)
+
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
@@ -57,10 +62,21 @@ class MainFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         cartesianSystem = activity?.findViewById<CartesianView>(R.id.cartesian)
 
+        graphColor = activity?.findViewById<Spinner>(R.id.graph_color)?.apply {
+            var items: Array<String> = arrayOf<String>("green", "red", "blue", "yellow")
+            var adapter: ArrayAdapter<String> =  ArrayAdapter<String>(this.context, android.R.layout.simple_spinner_item, items)
+            this.adapter = adapter
+            this.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                    //this@MainFragment.graphColor = parent.selectedItem.toString()
+                    Log.d("GET COLORS", parent.selectedItem.toString())
+                }
 
+                override fun onNothingSelected(parent: AdapterView<*>) {
 
-
-
+                }
+            }
+        }
 
         editTextStartOX = activity?.findViewById<EditText>(R.id.ox_start)?.apply {
             this.addTextChangedListener(object: TextWatcher {
@@ -119,6 +135,19 @@ class MainFragment : Fragment() {
             })
         }
 
+        strokeWidthEditText = activity?.findViewById<EditText>(R.id.stroke_width)?.apply {
+            this.addTextChangedListener(object: TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    if(strokeWidthEditText?.text.toString() == "") viewModel.strokeWidth?.postValue(2F)
+                    else viewModel.strokeWidth?.postValue(strokeWidthEditText?.text.toString().toFloat())
+                }
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                }
+                override fun onTextChanged(s: CharSequence?, start: Int, count: Int, before: Int) {
+                }
+            })
+        }
+
         errorTextView = activity?.findViewById<TextView>(R.id.error_textView)?.apply {
             this.visibility = View.INVISIBLE
         }
@@ -145,7 +174,6 @@ class MainFragment : Fragment() {
                     if(visibilityBtn?.text.toString() == getString(R.string.btn_hide)) {
                         visibilityBtn?.text = getString(R.string.btn_show)
                         cartesianSystem?.visibility = View.INVISIBLE
-
                     }
                     else {
                         visibilityBtn?.text = getString(R.string.btn_hide)
@@ -163,26 +191,17 @@ class MainFragment : Fragment() {
                         cartesianSystem?.endOX = this.endOX!!
                         cartesianSystem?.startOY = this.startOY!!
                         cartesianSystem?.endOY = this.endOY!!
-
-//                        var axisOX: MutableList<Float> = mutableListOf<Float>()
-//                        var diff: Int = this.endOX!!.toInt() - this.startOX!!.toInt()
-//                        for(i in 0..diff) {
-//                            var value: Float = i.toFloat()
-//                            if(converter?.toDpOX(value) != null) {
-//                                axisOX.add(converter!!.toDpOX(value))
-//                            }
-//
-//                        }
-
-
-
                         var points: MutableList<Float> = mutableListOf<Float>()
                         var size: Int = cartesianSystem?.width ?: 1
 
                         for(i in 0 until size){
                             points.add(converter.toDpOY(this.func(converter.toCartesianOX(i.toFloat()))))
                         }
-                        cartesianSystem?.updatePoints(points)
+                        viewModel.strokeWidth?.observe(this@MainFragment, Observer {
+                            if(it != null) cartesianSystem?.updateGraph(points, it)
+                            else errorTextView?.visibility = View.VISIBLE
+                        })
+
                     }
                 }
                 else {
@@ -193,7 +212,17 @@ class MainFragment : Fragment() {
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+    }
+
     fun func(x: Float): Float {
-        return (x * x)
+        return (1 / x)
     }
 }

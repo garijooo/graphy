@@ -1,9 +1,4 @@
 package kz.garijooo.graphy.models
-
-import android.text.style.LineHeightSpan
-import android.util.Log
-import kotlin.math.abs
-
 class ConverterModel(oxStart: Float, oxEnd: Float, width: Float, oyStart: Float, oyEnd: Float, height: Float) {
     private var _oxStart: Float
     var oxStart: Float
@@ -47,7 +42,7 @@ class ConverterModel(oxStart: Float, oxEnd: Float, width: Float, oyStart: Float,
         return (this.oxStart + (value * (this.oxEnd - this.oxStart) / this.width ))
     }
     fun toCartesianOY(value: Float){
-
+        // not necessary to be implemented in the case of this project
     }
     fun toDpOX(value: Float): Float{
         return (((this.width / (this.oxEnd - this.oxStart)) * value))
