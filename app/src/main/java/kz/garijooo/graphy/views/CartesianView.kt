@@ -15,6 +15,8 @@ class CartesianView(context: Context, attrs: AttributeSet? = null): View(context
     val painterAxis: Paint = Paint()
     val painterAxisSerifs: Paint = Paint()
     val painterGraph: Paint = Paint()
+    var painterAxisNumberSmall: Paint = Paint()
+    var painterAxisNumberBig: Paint = Paint()
 
     // converter object
     private var _converter: ConverterModel? = null
@@ -64,6 +66,10 @@ class CartesianView(context: Context, attrs: AttributeSet? = null): View(context
 
         painterGraph.strokeWidth = 2F
         painterGraph.color = 0xff66ac4a.toInt()
+
+        painterAxisNumberSmall.textSize = 30F
+
+        painterAxisNumberBig.textSize = 50F
     }
     fun changeColor(color: String): Unit{
         when(color) {
@@ -91,6 +97,7 @@ class CartesianView(context: Context, attrs: AttributeSet? = null): View(context
                             var valueOy: Float = converter?.toDpOY(i.toFloat())!!
                             var valueOx: Float = converter?.toDpOX(0F - startOX!!)!!
                             drawLine(valueOx + 20F, valueOy, valueOx - 20F, valueOy , painterAxisSerifs);
+                            drawText(i.toString(), valueOx + 30F, valueOy, painterAxisNumberSmall)
                         }
                     }
                     else if(endOyInt - startOyInt > 50 && endOyInt - startOyInt <= 100) {
@@ -98,8 +105,10 @@ class CartesianView(context: Context, attrs: AttributeSet? = null): View(context
                             var valueOy: Float = converter?.toDpOY(i.toFloat())!!
                             var valueOx: Float = converter?.toDpOX(0F - startOX!!)!!
                             drawLine(valueOx + 20F, valueOy, valueOx - 20F, valueOy , painterAxisSerifs);
+                            drawText(i.toString(), valueOx + 30F, valueOy, painterAxisNumberBig)
                         }
                     }
+
                 }
             }
             if(startOY != null) {
@@ -109,20 +118,20 @@ class CartesianView(context: Context, attrs: AttributeSet? = null): View(context
                     if(endOxInt - startOxInt <= 50){
                         for(i in startOxInt..endOxInt) {
                             drawLine(converter!!.toDpOX(i.toFloat() - startOX!!),converter!!.toDpOY(0F) + 20F, converter!!.toDpOX(i.toFloat() - startOX!!), converter!!.toDpOY(0F) - 20F, painterAxisSerifs)
+                            drawText(i.toString(), converter!!.toDpOX(i.toFloat() - startOX!!) - 10F, converter!!.toDpOY(0F) + 40F, painterAxisNumberSmall)
                         }
                     }
                     else if(endOxInt - startOxInt > 50 && endOxInt - startOxInt <= 100) {
                         for(i in startOxInt..endOxInt step 10) {
                             drawLine(converter!!.toDpOX(i.toFloat() - startOX!!),converter!!.toDpOY(0F) + 20F, converter!!.toDpOX(i.toFloat() - startOX!!), converter!!.toDpOY(0F) - 20F, painterAxisSerifs)
+                            drawText(i.toString(), converter!!.toDpOX(i.toFloat() - startOX!!) - 10F, converter!!.toDpOY(0F) + 40F, painterAxisNumberBig)
                         }
                     }
                 }
             }
-
-
-
         }
     }
+
     fun drawGraph(canvas: Canvas?) {
         canvas?.apply {
             val size: Int = this@CartesianView.points.size
