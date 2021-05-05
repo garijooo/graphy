@@ -5,17 +5,12 @@ import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.get
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.observe
 import kz.garijooo.graphy.R
 import kz.garijooo.graphy.models.Constants
 import kz.garijooo.graphy.models.ConverterModel
@@ -29,7 +24,6 @@ class MainFragment : Fragment() {
         fun newInstance() = MainFragment()
     }
     private lateinit var viewModel: MainViewModel
-    private var visibilityBtn: Button? = null
     private var cartesianSystem: CartesianView? = null
     // main layout
     private var mainLayout: ConstraintLayout? = null
@@ -55,6 +49,11 @@ class MainFragment : Fragment() {
     // color items
     var items: Array<String> = arrayOf<String>("green", "red", "blue", "yellow")
 
+    // visibility button
+    private var visibilityBtn: Button? = null
+    // function buttons
+    private var func1Button: Button? = null
+    private var func2Button: Button? = null
     // functions
     private var functions: Functions = Functions()
 
@@ -67,6 +66,11 @@ class MainFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         cartesianSystem = activity?.findViewById<CartesianView>(R.id.cartesian)
+
+        if(viewModel.currentFunction != null){
+//            cartesianSystem?.updateGraph(viewModel.points!!.value!!, viewModel.strokeWidth!!.value!!, viewModel.graphColor!!.value!!)
+        }
+
 
 
         graphColor = activity?.findViewById<Spinner>(R.id.graph_color)?.apply {
@@ -173,22 +177,31 @@ class MainFragment : Fragment() {
             this.visibility = View.INVISIBLE
         }
 
+        // getting button objects
         visibilityBtn = activity?.findViewById<Button>(R.id.visibilityBtn)
+        func1Button = activity?.findViewById<Button>(R.id.func1Btn)
+        func2Button = activity?.findViewById<Button>(R.id.func2Btn)
 
-        visibilityBtn?.setOnClickListener {
-            if(viewModel.startOX!!.value != null && viewModel.endOX!!.value != null){
+
+        func1Button?.setOnClickListener {
+            if(viewModel.startOX!!.value != null && viewModel.endOX!!.value != null && viewModel.strokeWidth!!.value != null){
                 if(viewModel.startOX!!.value!! < viewModel.endOX!!.value!!) {
-                    errorTextView?.visibility = View.INVISIBLE
-                    if(visibilityBtn?.text.toString() == getString(R.string.btn_hide)) {
-                        visibilityBtn?.text = getString(R.string.btn_show)
-                        cartesianSystem?.visibility = View.INVISIBLE
-                    }
-                    else {
-                        Log.d("V PIVE", "YA V PIVE")
+                    if(viewModel.startOY!!.value!! < viewModel.endOY!!.value!!) {
+                        errorTextView?.visibility = View.INVISIBLE
                         // hide btn and cartesian view visualisation
-                        visibilityBtn?.visibility = View.VISIBLE
                         visibilityBtn?.text = getString(R.string.btn_hide)
+                        visibilityBtn?.visibility = View.VISIBLE
                         cartesianSystem?.visibility = View.VISIBLE
+
+                        // hiding components
+                        editTextEndOX?.visibility = View.INVISIBLE
+                        editTextStartOX?.visibility = View.INVISIBLE
+                        editTextEndOY?.visibility = View.INVISIBLE
+                        editTextStartOY?.visibility = View.INVISIBLE
+                        strokeWidthEditText?.visibility = View.INVISIBLE
+                        graphColor?.visibility = View.INVISIBLE
+                        func1Button?.visibility = View.INVISIBLE
+                        func2Button?.visibility = View.INVISIBLE
 
                         // converter initialization
                         converter = ConverterModel(viewModel.startOX!!.value!!, viewModel.endOX!!.value!!, cartesianSystem!!.width.toFloat(), viewModel.startOY!!.value!!, viewModel.endOY!!.value!!, cartesianSystem!!.height.toFloat())
@@ -200,7 +213,7 @@ class MainFragment : Fragment() {
                         cartesianSystem?.endOY = viewModel.endOY!!.value!!
 
                         // points list calculation
-                        if(viewModel.points?.value == null || viewModel.points?.value.isNullOrEmpty()) {
+                        if(viewModel.points?.value == null || viewModel.points?.value.isNullOrEmpty() || viewModel.lastFunction!!.value!! != 1) {
                             var points: MutableList<Float> = mutableListOf<Float>()
                             var size: Int = cartesianSystem?.width?:1
                             for(i in 0 until size) points.add(converter.toDpOY(functions.func1(converter.toCartesianOX(i.toFloat()))))
@@ -208,14 +221,90 @@ class MainFragment : Fragment() {
                             cartesianSystem?.updateGraph(points, viewModel.strokeWidth!!.value!!, viewModel.graphColor!!.value!!)
                         }
                         else if(viewModel.points?.value != null) cartesianSystem?.updateGraph(viewModel.points!!.value!!, viewModel.strokeWidth!!.value!!, viewModel.graphColor!!.value!!)
+                        viewModel.currentFunction?.postValue(1)
+                        viewModel.lastFunction?.postValue(1)
+                    }
+                    else {
+                        errorTextView?.text = R.string.error_text_limits_oy.toString()
+                        errorTextView?.visibility = View.VISIBLE
                     }
                 }
                 else {
+                    errorTextView?.text = R.string.error_text_limits_ox.toString()
                     errorTextView?.visibility = View.VISIBLE
                 }
             }
-
         }
+
+        func2Button?.setOnClickListener {
+            if(viewModel.startOX!!.value != null && viewModel.endOX!!.value != null && viewModel.strokeWidth!!.value != null){
+                if(viewModel.startOX!!.value!! < viewModel.endOX!!.value!!) {
+                    if(viewModel.startOY!!.value!! < viewModel.endOY!!.value!!) {
+                        errorTextView?.visibility = View.INVISIBLE
+                        // hide btn and cartesian view visualisation
+                        visibilityBtn?.text = getString(R.string.btn_hide)
+                        visibilityBtn?.visibility = View.VISIBLE
+                        cartesianSystem?.visibility = View.VISIBLE
+
+                        // hiding components
+                        editTextEndOX?.visibility = View.INVISIBLE
+                        editTextStartOX?.visibility = View.INVISIBLE
+                        editTextEndOY?.visibility = View.INVISIBLE
+                        editTextStartOY?.visibility = View.INVISIBLE
+                        strokeWidthEditText?.visibility = View.INVISIBLE
+                        graphColor?.visibility = View.INVISIBLE
+                        func1Button?.visibility = View.INVISIBLE
+                        func2Button?.visibility = View.INVISIBLE
+
+                        // converter initialization
+                        converter = ConverterModel(viewModel.startOX!!.value!!, viewModel.endOX!!.value!!, cartesianSystem!!.width.toFloat(), viewModel.startOY!!.value!!, viewModel.endOY!!.value!!, cartesianSystem!!.height.toFloat())
+
+                        cartesianSystem?.converter = converter;
+                        cartesianSystem?.startOX = viewModel.startOX!!.value!!
+                        cartesianSystem?.endOX = viewModel.endOX!!.value!!
+                        cartesianSystem?.startOY = viewModel.startOY!!.value!!
+                        cartesianSystem?.endOY = viewModel.endOY!!.value!!
+
+                        // points list calculation
+                        if(viewModel.points?.value == null || viewModel.points?.value.isNullOrEmpty() || viewModel.lastFunction!!.value!! != 2) {
+                            var points: MutableList<Float> = mutableListOf<Float>()
+                            var size: Int = cartesianSystem?.width?:1
+                            for(i in 0 until size) points.add(converter.toDpOY(functions.func2(converter.toCartesianOX(i.toFloat()))))
+                            viewModel.points?.postValue(points)
+                            cartesianSystem?.updateGraph(points, viewModel.strokeWidth!!.value!!, viewModel.graphColor!!.value!!)
+                        }
+                        else if(viewModel.points?.value != null) cartesianSystem?.updateGraph(viewModel.points!!.value!!, viewModel.strokeWidth!!.value!!, viewModel.graphColor!!.value!!)
+                        viewModel.currentFunction?.postValue(2)
+                        viewModel.lastFunction?.postValue(2)
+                    }
+                    else {
+                        errorTextView?.text = R.string.error_text_limits_oy.toString()
+                        errorTextView?.visibility = View.VISIBLE
+                    }
+                }
+                else {
+                    errorTextView?.text = R.string.error_text_limits_ox.toString()
+                    errorTextView?.visibility = View.VISIBLE
+                }
+            }
+        }
+
+        visibilityBtn?.setOnClickListener {
+            viewModel.currentFunction?.postValue(null)
+            visibilityBtn?.visibility = View.INVISIBLE
+            cartesianSystem?.visibility = View.INVISIBLE
+
+            // showing components
+            editTextEndOX?.visibility = View.VISIBLE
+            editTextStartOX?.visibility = View.VISIBLE
+            editTextEndOY?.visibility = View.VISIBLE
+            editTextStartOY?.visibility = View.VISIBLE
+            strokeWidthEditText?.visibility = View.VISIBLE
+            graphColor?.visibility = View.VISIBLE
+            func1Button?.visibility = View.VISIBLE
+            func2Button?.visibility = View.VISIBLE
+        }
+
     }
 
     override fun onStart() {
@@ -268,9 +357,7 @@ class MainFragment : Fragment() {
             val pointsList = MutableList(cartesianSystem?.width?:1){
                 getFloat(Constants.POINTS+it.toString(), 0F)
             }
-            Log.d("START POINTS_LIST", pointsList.toString())
             viewModel.points?.postValue(pointsList.toMutableList())
-
         }
     }
 
@@ -295,9 +382,5 @@ class MainFragment : Fragment() {
                 apply()
             }
         }
-    }
-
-    fun func(x: Float): Float {
-        return (1 / x)
     }
 }

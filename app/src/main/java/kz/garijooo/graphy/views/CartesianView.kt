@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import kz.garijooo.graphy.models.ConverterModel
 
@@ -35,7 +34,6 @@ class CartesianView(context: Context, attrs: AttributeSet? = null): View(context
             "blue" -> painterGraph.color = 0xff5f5fee.toInt()
             "yellow" -> painterGraph.color = 0xffdff541.toInt()
         }
-        Log.d("points INSIDE MY ASS", points.toString())
         invalidate()
     }
     // numeric fields
@@ -60,7 +58,7 @@ class CartesianView(context: Context, attrs: AttributeSet? = null): View(context
         set(value) { _endOY = value }
 
     init {
-        painterBG.color = 0xfffaf18e.toInt()
+        painterBG.color = 0xfff7f4d9.toInt()
         painterAxis.color = 0xff000000.toInt()
         painterAxis.strokeWidth = 7F
         painterAxisSerifs.strokeWidth = 3.5F

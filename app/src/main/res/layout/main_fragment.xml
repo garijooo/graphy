@@ -20,6 +20,30 @@
 
         />
     <Button
+        android:id="@+id/func1Btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/func2Btn"
+        android:text="@string/func1_btn"
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="#f7f2bb"
+        android:textColor="#6d661f"
+        />
+    <Button
+        android:id="@+id/func2Btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/func1Btn"
+        android:text="@string/func2_btn"
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="#f7f2bb"
+        android:textColor="#6d661f"
+        />
+    <Button
         android:id="@+id/visibilityBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -30,6 +54,7 @@
         android:layout_marginBottom="20dp"
         android:backgroundTint="#f7f2bb"
         android:textColor="#6d661f"
+        android:visibility="invisible"
         />
     <TextView
         android:id="@+id/limitations_text"

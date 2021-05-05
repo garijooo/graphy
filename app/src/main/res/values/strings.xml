@@ -6,4 +6,8 @@
     <string name="ox_axis_text">OX Axis</string>
     <string name="oy_axis_text">OY Axis</string>
     <string name="error_text">Please, enter valid limitations!</string>
+    <string name="func1_btn">0.1x^3+x^2-10sin(x)</string>
+    <string name="func2_btn">sqrt(4-4x^2)</string>
+    <string name="error_text_limits_ox">Write correct limits for OX</string>
+    <string name="error_text_limits_oy">Write correct limits for OY</string>
 </resources>
