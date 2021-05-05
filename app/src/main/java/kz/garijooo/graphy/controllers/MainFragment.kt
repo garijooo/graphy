@@ -1,5 +1,6 @@
 package kz.garijooo.graphy.controllers
 
+import android.content.Context
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.text.Editable
@@ -16,6 +17,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.observe
 import kz.garijooo.graphy.R
+import kz.garijooo.graphy.models.Constants
 import kz.garijooo.graphy.models.ConverterModel
 import kz.garijooo.graphy.models.MainViewModel
 import kz.garijooo.graphy.views.CartesianView
@@ -62,13 +64,19 @@ class MainFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         cartesianSystem = activity?.findViewById<CartesianView>(R.id.cartesian)
 
+        if(viewModel.graphColor?.value != null)
+            Log.d("graph color", viewModel.graphColor?.value.toString())
+        if(viewModel.strokeWidth?.value != null)
+            Log.d("stroke width", viewModel.strokeWidth?.value.toString())
+
         graphColor = activity?.findViewById<Spinner>(R.id.graph_color)?.apply {
             var items: Array<String> = arrayOf<String>("green", "red", "blue", "yellow")
             var adapter: ArrayAdapter<String> =  ArrayAdapter<String>(this.context, android.R.layout.simple_spinner_item, items)
             this.adapter = adapter
             this.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                     cartesianSystem?.changeColor(parent.selectedItem.toString())
+                    viewModel.graphColor?.postValue(parent.selectedItem.toString())
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>) {
@@ -211,14 +219,32 @@ class MainFragment : Fragment() {
         }
     }
 
-    override fun onStop() {
-        super.onStop()
-
-    }
-
     override fun onStart() {
         super.onStart()
+        val prefs = activity?.getSharedPreferences(Constants.APP_NAME, Context.MODE_PRIVATE)
+        prefs?.run {
+            val strokeWidth = getFloat(Constants.STROKE_WIDTH, 5F)
+            Log.d("start strokeWidth", strokeWidth.toString())
+            viewModel.strokeWidth?.postValue(strokeWidth)
 
+            val graphColor = getString(Constants.GRAPH_COLOR, "green")
+            Log.d("start graphColor", graphColor.toString())
+            viewModel.graphColor?.postValue(graphColor)
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        val prefs = activity?.getSharedPreferences(Constants.APP_NAME, Context.MODE_PRIVATE)
+        prefs?.run {
+            edit().run {
+                putFloat(Constants.STROKE_WIDTH, viewModel.strokeWidth?.value?:5F)
+                Log.d("stop strokeWidth", viewModel.strokeWidth?.value.toString())
+                putString(Constants.GRAPH_COLOR, viewModel.graphColor?.value?:"green")
+                Log.d("stop graphColor", viewModel.graphColor?.value.toString())
+                apply()
+            }
+        }
     }
 
     fun func(x: Float): Float {

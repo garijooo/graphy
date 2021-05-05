@@ -68,7 +68,6 @@ class CartesianView(context: Context, attrs: AttributeSet? = null): View(context
         painterGraph.color = 0xff66ac4a.toInt()
 
         painterAxisNumberSmall.textSize = 30F
-
         painterAxisNumberBig.textSize = 50F
     }
     fun changeColor(color: String): Unit{
