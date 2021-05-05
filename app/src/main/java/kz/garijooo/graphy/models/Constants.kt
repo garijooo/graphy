@@ -9,5 +9,6 @@ object Constants {
     val END_OX = "kz.garijooo.graphy.end_ox"
     val START_OY = "kz.garijooo.graphy.start_oy"
     val END_OY = "kz.garijooo.graphy.end_oy"
-//    val
+
+    val POINTS = "kz.garijooo.graphy.points_"
 }

@@ -26,23 +26,24 @@ class CartesianView(context: Context, attrs: AttributeSet? = null): View(context
 
     // points
     private var points: MutableList<Float> = mutableListOf<Float>()
-    fun updateGraph(points: MutableList<Float>, strokeWidth: Float) {
+    fun updateGraph(points: MutableList<Float>, strokeWidth: Float, color: String) {
         this.points = points
         this.painterGraph.strokeWidth = strokeWidth
+        when(color) {
+            "green" -> painterGraph.color = 0xff66ac4a.toInt()
+            "red" -> painterGraph.color = 0xffb41320.toInt()
+            "blue" -> painterGraph.color = 0xff5f5fee.toInt()
+            "yellow" -> painterGraph.color = 0xffdff541.toInt()
+        }
+        Log.d("points INSIDE MY ASS", points.toString())
         invalidate()
     }
     // numeric fields
-    private var _axisOX: Float? = null
-
     private var _startOX: Float? = null
     private var _endOX: Float? = null
 
     private var _startOY: Float? = null
     private var _endOY: Float? = null
-
-    var axisOX: Float?
-        get() = _axisOX
-        set(value) { _axisOX = value }
 
     var startOX: Float?
         get() = _startOX
