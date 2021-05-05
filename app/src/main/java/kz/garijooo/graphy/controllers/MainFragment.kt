@@ -19,6 +19,7 @@ import androidx.lifecycle.observe
 import kz.garijooo.graphy.R
 import kz.garijooo.graphy.models.Constants
 import kz.garijooo.graphy.models.ConverterModel
+import kz.garijooo.graphy.models.Functions
 import kz.garijooo.graphy.models.MainViewModel
 import kz.garijooo.graphy.views.CartesianView
 
@@ -51,11 +52,11 @@ class MainFragment : Fragment() {
     private var errorTextView: TextView? = null
     // model objects
     private lateinit var converter: ConverterModel
-
-    private var currentColor: String? = null
     // color items
     var items: Array<String> = arrayOf<String>("green", "red", "blue", "yellow")
 
+    // functions
+    private var functions: Functions = Functions()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
@@ -83,8 +84,7 @@ class MainFragment : Fragment() {
             this.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                     cartesianSystem?.changeColor(parent.selectedItem.toString())
-                    currentColor = parent.selectedItem.toString()
-                    viewModel.graphColor?.postValue(currentColor)
+                    viewModel.graphColor?.postValue(parent.selectedItem.toString())
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>) {
@@ -203,9 +203,8 @@ class MainFragment : Fragment() {
                         if(viewModel.points?.value == null || viewModel.points?.value.isNullOrEmpty()) {
                             var points: MutableList<Float> = mutableListOf<Float>()
                             var size: Int = cartesianSystem?.width?:1
-                            for(i in 0 until size) points.add(converter.toDpOY(this.func(converter.toCartesianOX(i.toFloat()))))
+                            for(i in 0 until size) points.add(converter.toDpOY(functions.func1(converter.toCartesianOX(i.toFloat()))))
                             viewModel.points?.postValue(points)
-                            Log.d("points", points.toString())
                             cartesianSystem?.updateGraph(points, viewModel.strokeWidth!!.value!!, viewModel.graphColor!!.value!!)
                         }
                         else if(viewModel.points?.value != null) cartesianSystem?.updateGraph(viewModel.points!!.value!!, viewModel.strokeWidth!!.value!!, viewModel.graphColor!!.value!!)
