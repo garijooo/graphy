@@ -13,12 +13,12 @@ class MainViewModel : ViewModel() {
 //        set(value) {
 //            _data = value
 //        }
-    var startOX: MutableLiveData<Float>? = MutableLiveData<Float>()
+    var startOX: MutableLiveData<Float>? = MutableLiveData<Float>(null)
     var endOX: MutableLiveData<Float>? = MutableLiveData<Float>()
     var startOY: MutableLiveData<Float>? = MutableLiveData<Float>()
     var endOY: MutableLiveData<Float>? = MutableLiveData<Float>()
 
-    var strokeWidth: MutableLiveData<Float>? = MutableLiveData<Float>()
+    var strokeWidth: MutableLiveData<Float>? = MutableLiveData<Float>(null)
 
-    var graphColor: MutableLiveData<String>? = MutableLiveData<String>()
+    var graphColor: MutableLiveData<String>? = MutableLiveData<String>(null)
 }

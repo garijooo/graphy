@@ -52,6 +52,9 @@ class MainFragment : Fragment() {
     // model objects
     private var converter: ConverterModel = ConverterModel(0F, 0F, 0F, 0F, 0F, 0F)
 
+    private var currentColor: String? = null
+    // color items
+    var items: Array<String> = arrayOf<String>("green", "red", "blue", "yellow")
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -64,28 +67,41 @@ class MainFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         cartesianSystem = activity?.findViewById<CartesianView>(R.id.cartesian)
 
-        if(viewModel.graphColor?.value != null)
-            Log.d("graph color", viewModel.graphColor?.value.toString())
-        if(viewModel.strokeWidth?.value != null)
-            Log.d("stroke width", viewModel.strokeWidth?.value.toString())
 
         graphColor = activity?.findViewById<Spinner>(R.id.graph_color)?.apply {
-            var items: Array<String> = arrayOf<String>("green", "red", "blue", "yellow")
+
             var adapter: ArrayAdapter<String> =  ArrayAdapter<String>(this.context, android.R.layout.simple_spinner_item, items)
             this.adapter = adapter
+            var index: Int? = null
+            for(i in 0 until items.size)
+                if(viewModel.graphColor!!.value != null) {
+                    if (viewModel.graphColor!!.value == items[i]) {
+                        index = i
+                    }
+                }
+            this.setSelection(index?:0)
+
             this.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                     cartesianSystem?.changeColor(parent.selectedItem.toString())
-                    viewModel.graphColor?.postValue(parent.selectedItem.toString())
+                    currentColor = parent.selectedItem.toString()
+                    viewModel.graphColor?.postValue(currentColor)
+                    Log.d("selected", parent.selectedItem.toString())
+//                    if(currentColor != null)
+                    Log.d("selected currentColor", currentColor!!)
+                    Log.d("selected viewModelColor", viewModel.graphColor!!.value)
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>) {
-
+//                    viewModel.graphColor?.postValue(parent.selectedItem.toString())
                 }
             }
         }
 
         editTextStartOX = activity?.findViewById<EditText>(R.id.ox_start)?.apply {
+            if(viewModel.startOX?.value != null) {
+                this.setText(viewModel.startOX!!.value.toString())
+            }
             this.addTextChangedListener(object: TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
                     if(editTextStartOX?.text.toString() == "" || editTextStartOX?.text.toString() == "-") viewModel.startOX?.postValue(0.0F)
@@ -96,10 +112,6 @@ class MainFragment : Fragment() {
                 override fun onTextChanged(s: CharSequence?, start: Int, count: Int, before: Int) {
                 }
             })
-            if(viewModel.startOX != null) {
-                Log.d("check", viewModel.startOX!!.toString())
-//                this.setText(viewModel.startOX!!.toString())
-            }
         }
 
         editTextEndOX = activity?.findViewById<EditText>(R.id.ox_end)?.apply {
@@ -153,6 +165,10 @@ class MainFragment : Fragment() {
                 override fun onTextChanged(s: CharSequence?, start: Int, count: Int, before: Int) {
                 }
             })
+        }
+        if(viewModel.strokeWidth?.value != null) {
+//            Log.d("stroke !!!!!", viewModel.strokeWidth!!.value.toString())
+            strokeWidthEditText?.setText(viewModel.strokeWidth!!.value.toString(), TextView.BufferType.EDITABLE)
         }
 
         errorTextView = activity?.findViewById<TextView>(R.id.error_textView)?.apply {
@@ -223,13 +239,49 @@ class MainFragment : Fragment() {
         super.onStart()
         val prefs = activity?.getSharedPreferences(Constants.APP_NAME, Context.MODE_PRIVATE)
         prefs?.run {
-            val strokeWidth = getFloat(Constants.STROKE_WIDTH, 5F)
-            Log.d("start strokeWidth", strokeWidth.toString())
-            viewModel.strokeWidth?.postValue(strokeWidth)
+            // stroke width manipulations
+            val strokeWidthVal = getFloat(Constants.STROKE_WIDTH, 5F)
+            viewModel.strokeWidth?.postValue(strokeWidthVal)
+            // visualisation
+            Log.d("start stroke", strokeWidthVal.toString())
+            if(strokeWidthVal.toString() != null)
+                strokeWidthEditText?.setText(strokeWidthVal.toString() , TextView.BufferType.EDITABLE)
 
-            val graphColor = getString(Constants.GRAPH_COLOR, "green")
-            Log.d("start graphColor", graphColor.toString())
-            viewModel.graphColor?.postValue(graphColor)
+            // color manipulations
+            val graphColorVal = getString(Constants.GRAPH_COLOR, "")
+            viewModel.graphColor?.postValue(graphColorVal)
+            // visualisation
+            Log.d("start color", graphColorVal)
+            var index: Int? = null
+            for(i in 0 until items.size)
+                if(graphColorVal != null) {
+                    if (graphColorVal == items[i]) {
+                        index = i
+                    }
+                }
+            graphColor?.setSelection(index?:0)
+
+            // ox limitations
+            val startOxVal = getFloat(Constants.START_OX, 0F)
+            viewModel.startOX?.postValue(startOxVal)
+            val endOxVal = getFloat(Constants.END_OX, 0F)
+            viewModel.endOX?.postValue(endOxVal)
+            // visualisation
+            if(startOxVal.toString() != null)
+                editTextStartOX?.setText(startOxVal.toString() , TextView.BufferType.EDITABLE)
+            if(endOxVal.toString() != null)
+                editTextEndOX?.setText(endOxVal.toString() , TextView.BufferType.EDITABLE)
+
+            // oy limitations
+            val startOyVal = getFloat(Constants.START_OY, 0F)
+            viewModel.startOY?.postValue(startOyVal)
+            val endOyVal = getFloat(Constants.END_OY, 0F)
+            viewModel.endOY?.postValue(endOyVal)
+            // visualisation
+            if(startOyVal.toString() != null)
+                editTextStartOY?.setText(startOyVal.toString() , TextView.BufferType.EDITABLE)
+            if(endOyVal.toString() != null)
+                editTextEndOY?.setText(endOyVal.toString() , TextView.BufferType.EDITABLE)
         }
     }
 
@@ -239,10 +291,15 @@ class MainFragment : Fragment() {
         prefs?.run {
             edit().run {
                 putFloat(Constants.STROKE_WIDTH, viewModel.strokeWidth?.value?:5F)
-                Log.d("stop strokeWidth", viewModel.strokeWidth?.value.toString())
-                putString(Constants.GRAPH_COLOR, viewModel.graphColor?.value?:"green")
-                Log.d("stop graphColor", viewModel.graphColor?.value.toString())
+
+                putFloat(Constants.START_OX, viewModel.startOX?.value?:0F)
+                putFloat(Constants.END_OX, viewModel.endOX?.value?:0F)
+                putFloat(Constants.START_OY, viewModel.startOY?.value?:0F)
+                putFloat(Constants.END_OY, viewModel.endOY?.value?:0F)
+
+                putString(Constants.GRAPH_COLOR, this@MainFragment.currentColor?:"green")
                 apply()
+
             }
         }
     }
