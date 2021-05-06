@@ -67,11 +67,6 @@ class MainFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         cartesianSystem = activity?.findViewById<CartesianView>(R.id.cartesian)
 
-        if(viewModel.currentFunction != null){
-//            cartesianSystem?.updateGraph(viewModel.points!!.value!!, viewModel.strokeWidth!!.value!!, viewModel.graphColor!!.value!!)
-        }
-
-
 
         graphColor = activity?.findViewById<Spinner>(R.id.graph_color)?.apply {
             var adapter: ArrayAdapter<String> =  ArrayAdapter<String>(this.context, android.R.layout.simple_spinner_item, items)
@@ -225,12 +220,12 @@ class MainFragment : Fragment() {
                         viewModel.lastFunction?.postValue(1)
                     }
                     else {
-                        errorTextView?.text = R.string.error_text_limits_oy.toString()
+                        errorTextView?.text = getString(R.string.error_text_limits_oy)
                         errorTextView?.visibility = View.VISIBLE
                     }
                 }
                 else {
-                    errorTextView?.text = R.string.error_text_limits_ox.toString()
+                    errorTextView?.text = getString(R.string.error_text_limits_ox)
                     errorTextView?.visibility = View.VISIBLE
                 }
             }
@@ -278,12 +273,12 @@ class MainFragment : Fragment() {
                         viewModel.lastFunction?.postValue(2)
                     }
                     else {
-                        errorTextView?.text = R.string.error_text_limits_oy.toString()
+                        errorTextView?.text = getString(R.string.error_text_limits_oy)
                         errorTextView?.visibility = View.VISIBLE
                     }
                 }
                 else {
-                    errorTextView?.text = R.string.error_text_limits_ox.toString()
+                    errorTextView?.text = getString(R.string.error_text_limits_ox)
                     errorTextView?.visibility = View.VISIBLE
                 }
             }
